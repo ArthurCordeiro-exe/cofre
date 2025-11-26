@@ -8,4 +8,11 @@ class Moeda(Enum):
     M100 = (1.00, 4)
 
     def __init__(self, valor: float, volume: int):
-        pass
+        self.valor = valor
+        self.volume = volume
+
+    def get_volume(self):
+        return self.volume
+
+    def get_valor(self):
+        return self.valor
