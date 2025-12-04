@@ -1,12 +1,13 @@
-from cofre.src.item import Item
-from cofre.src.moeda import Moeda
+from multiprocessing.spawn import spawn_main
+
+from src.item import Item
+from src.moeda import Moeda
 
 class Cofre:
 
     def __init__(self, volumeMaximo: int):
         self.volumeMaximo = volumeMaximo
         self.volumeAtual = 0
-        self.volumeRestante = self.volumeMaximo - self.volumeAtual
         self.itens = []
         self.moedas = []
         self.estadoCofre = True
@@ -18,45 +19,51 @@ class Cofre:
         return self.volumeMaximo
 
     def getVolumeRestante(self):
-        return self.volumeRestante
+        return self.getVolumeMaximo() - self.getVolume()
 
     def add(self, item: Item):
         if self.getVolume() < self.getVolumeMaximo():
-            if self.estadoCofre == True:
+            if self.estadoCofre:
                 if item.get_volume() <= self.getVolumeRestante():
                     self.itens.append(item)
                     self.volumeAtual += item.get_volume()
-                    self.volumeRestante -= item.get_volume()
                     return True
-                elif item.get_volume() > self.getVolumeRestante():
-                    return False
-            else:
                 return False
-        elif self.getVolume() == self.getVolumeMaximo():
             return False
-        else:
-            return False
+        return False
 
     def add(self, moeda: Moeda):
-        return True
+        if self.getVolume() < self.getVolumeMaximo():
+            if self.estadoCofre:
+                if moeda.get_volume() <= self.getVolumeRestante():
+                    self.moedas.append(moeda)
+                    self.volumeAtual += moeda.get_volume()
+                    return True
+                return False
+            return False
+        return False
 
     def obterItens(self):
+        valor = ""
         if self.estadoCofre == False:
             if len(self.itens) > 0:
-                return self.itens
-            elif len(self.itens) == 0:
-                return "Vazio"
-        else:
-            return "Cofre não está quebrado"
+                for i in range(len(self.moedas)):
+                    valor += self.itens[i].get_descricao()
+                    return valor
+            return "vazio"
+        return None
 
     def obterMoedas(self):
+        valor2 = 0
         if self.estadoCofre == False:
             if len(self.moedas) > 0:
-                return self.moedas
+                for i in range(len(self.moedas)):
+                    valor2 += self.moedas[i].get_valor()
+                return valor2
             elif len(self.moedas) == 0:
-                return "Vazio"
+                return 0
         else:
-            return "Cofre não está quebrado"
+            return -1
 
     def taInteiro(self):
         if self.estadoCofre == True:
