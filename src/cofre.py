@@ -25,7 +25,7 @@ class Cofre:
         if self.getVolume() < self.getVolumeMaximo():
             if self.estadoCofre:
                 if item.get_volume() <= self.getVolumeRestante():
-                    self.itens.append(item)
+                    self.itens.append(item.get_descricao())
                     self.volumeAtual += item.get_volume()
                     return True
                 return False
